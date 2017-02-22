@@ -1,6 +1,7 @@
 <template>
   <div class="app">
-    <tmpheader></tmpheader>
+    <tmp-header :seller="seller"></tmp-header>
+    <!--v-bind:seller="seller"-->
     <nav class="tab border-1px">
       <div class="tab-item">
          <router-link to="/goods" title="商品">商品</router-link>
@@ -19,9 +20,25 @@
 <script type="text/ecmascript-6">
   import header from './components/header/header.vue';
 
+  const ERR_OK = 0;//定义AJAX请求的状态码为
+
   export default {
+    data(){
+      return{
+        seller: {}
+      }
+    },
+    created(){//学名叫钩子
+      this.$http.get('/api/seller').then((response) => {
+        response = response.body;
+        if (response.errno === ERR_OK){
+          this.seller = response.data;
+//          console.log(this.seller)
+        }
+      });
+    },
     components: {
-      'tmpheader': header
+      'tmp-header': header
     }
   };
 </script>

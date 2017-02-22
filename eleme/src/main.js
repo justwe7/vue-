@@ -4,12 +4,16 @@ import Vue from 'vue';
 import App from './App';
 // import router from './router';
 import VueRouter from 'vue-router';
+import VueResource from 'vue-resource';
 
 import Goods from 'components/goods/goods';
 import Ratings from 'components/ratings/ratings';
 import Seller from 'components/seller/seller';
 
 import 'common/stylus/index.styl';//引入主css文件 路径名需要在base中定义
+
+Vue.use(VueResource);
+
 
 const routes = [//设置路由的页面
   {
