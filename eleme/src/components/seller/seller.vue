@@ -1,5 +1,5 @@
 <template>
-  <div>333商家模板</div>
+  <div>333商家页模板</div>
 </template>
 
 <script type="text/ecmascript-6">
