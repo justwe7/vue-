@@ -37,12 +37,12 @@
           <div class="star-wrapper">
             <star :size="48" :score="seller.score"></star>
           </div>
-          <div class="title">
-            <div class="line"></div>
-            <div class="text">优惠信息</div>
-            <div class="line"></div>
-          </div>
-          <!--<headerline></headerline>-->
+          <!--<div class="title">-->
+            <!--<div class="line"></div>-->
+            <!--<div class="text">优惠信息</div>-->
+            <!--<div class="line"></div>-->
+          <!--</div>-->
+          <headerline txt="优惠信息"></headerline>
           <ul v-if="seller.supports" class="supports">
             <!--<li class="supports-items" v-for="item in seller.supports">   1.0语法
               <span class="icon" :class="classMap[seller.supports[$index].type]"></span>
@@ -53,11 +53,7 @@
               <span class="text">{{seller.supports[index].description}}</span>
             </li>
           </ul>
-          <div class="title">
-            <div class="line"></div>
-            <div class="text">商家公告</div>
-            <div class="line"></div>
-          </div>
+          <headerline txt="商家公告"></headerline>
           <div class="bulletin">
             <p class="content">{{seller.bulletin}}</p>
           </div>
@@ -73,7 +69,7 @@
 
 <script type="text/ecmascript-6">
   import star from "components/star/star";
-//  import headerline from "components/header-title/header-title";
+  import headerline from "components/header-title/header-title";
 
   export default {
       props: {
@@ -98,8 +94,8 @@
           this.classMap = ['decrease','discount','guarantee','invoice','special'];
       },
       components: {
-          star
-//        ,headerline
+          star,
+          headerline
       }
   };
 </script>
