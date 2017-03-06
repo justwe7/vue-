@@ -30,7 +30,8 @@
       <img :src="seller.avatar" alt="" width="100%" height="100%">
     </div>
     <!--浮窗-->
-    <div class="detail" v-show="detailShow">
+    <transition name="fade">
+      <div class="detail" v-show="detailShow">
       <div class="detail-wrapper clearfix">
         <div class="detail-main">
           <h1 class="name">{{seller.name}}</h1>
@@ -63,6 +64,7 @@
         <i class="icon-close" @click="closeDetail"></i>
       </div>
     </div>
+    </transition>
     <!--header的头模板-->
   </div>
 </template>
@@ -181,34 +183,31 @@
 
     .bulletin-wrapper
       position: relative
-      height:28px
-      line-height:28px
+      height: 28px
+      line-height: 28px
       padding: 0 22px 0 12px
-      font-size 0
-      background: rgba(7,17,27,0.2);
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+      background: rgba(7, 17, 27, 0.2)
       .bulletin-title
-        display inline-block
-        vertical-align top
-        margin-top: 7px
-        width 22px
+        display: inline-block
+        vertical-align: top
+        margin-top: 8px
+        width: 22px
         height: 12px
         bg-image('bulletin')
-        background-size 22px 12px
+        background-size: 22px 12px
         background-repeat: no-repeat
       .bulletin-text
-        display inline-block
-        width 90%;
+        vertical-align: top
         margin: 0 4px
-        white-space nowrap
-        overflow: hidden
-        -ms-text-overflow: ellipsis
-        text-overflow: ellipsis
-        font-size 10px
+        font-size: 10px
       .icon-keyboard_arrow_right
         position: absolute
-        font-size 10px
+        font-size: 10px
         right: 12px
-        top 8px
+        top: 8px
     .background
       position: absolute
       top 0
@@ -225,7 +224,14 @@
       width 100%
       height: 100%
       overflow: auto
-      background: rgba(7,17,27,0.8);
+      opacity: 1
+      background: rgba(7, 17, 27, 0.8)
+      backdrop-filter: blur(10px)
+      &.fade-enter-active, &.fade-leave-active
+        transition: all 0.5s
+      &.fade-enter, &.fade-leave-active
+        opacity: 0
+        background: rgba(7, 17, 27, 0)
       .detail-wrapper
         width: 100%;
         min-height 100%
