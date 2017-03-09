@@ -2,7 +2,9 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li v-for="item in goods" class="menu-item">
+        <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
+            @click="selectMenu(index,$event)">
+          <!--currentIndex===index 为true时 current添加-->
           <span class="text border-1px">
             <b v-show="item.type>0" class="icon" :class="classMap[item.type]"></b>{{item.name}}
           </span>
@@ -53,7 +55,9 @@
       data() {
         return {
             goods: [],//接收传过来的数据
-            listHeight: []
+            listHeight: [],
+            scrollY: 0,
+            selectedFood: {}
         }
       },
       created() {
@@ -63,7 +67,7 @@
               response = response.body;
               if(response.errno === ERR_OK){
                 this.goods = response.data;
-                this.$nextTick(() => {
+                this.$nextTick(() => {//dom已经渲染完成  dom改变之后  如果操作原生的dom相关最好在此方法中
                   this._initScroll();
                   this._calculateHeight();
                 });
@@ -84,7 +88,16 @@
           }
       },
       methods: {
+        selectMenu(index, event) {
+          if (event._constructed) {//PC端会有两个点击事件，如果是自定义的滚动条触发点击
+//            console.log(index,event)
+            let foodList = this.$refs.foodList;
+            let el = foodList[index];
+            this.foodsScroll.scrollToElement(el, 300);
+          }
+        },
         _initScroll() {//自定义的滚动条
+          /*如果需要获取原生的dom 可以加ref="menuWrapper" 属性来访问*/
           this.meunScroll = new BSscroll(this.$refs.menuWrapper, {
             click: true
           });
@@ -132,6 +145,14 @@
         width: 56px
         padding: 0 12px
         line-height: 14px
+        &.current
+          position relative
+          z-index: 10
+          margin-top: -1px
+          background-color: #fff
+          font-weight: 700
+          .text
+            border: none
       .icon
         display: inline-block
         vertical-align: top
