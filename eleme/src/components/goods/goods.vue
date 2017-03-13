@@ -31,13 +31,16 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice"
+    <shopcart ref="shopcart"　:selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
                :minPrice="seller.minPrice"></shopcart>
     <!--:selectFoods="selectFoods"-->
   </div>
@@ -46,6 +49,7 @@
 <script type="text/ecmascript-6">
   import BSscroll from "better-scroll";
   import shopcart from "components/shopcart/shopcart";
+  import cartcontrol from "components/cartcontrol/cartcontrol"
   /*
   * 引入模板组件  1. 引入文件  2.components参数设置标签名   3.模板页需要设置输出   4.使用自定义的标签名写到结构中
   * 从父级传入属性 :属性名="a"  然后子组件 props 参数接收参数
@@ -96,6 +100,17 @@
               }
             }
             return 0;
+          },
+          selectFoods() {
+              let foods = [];
+              this.goods.forEach((good) => {//1.遍历所有的商品
+                  good.foods.forEach((food) => {//2.遍历 所有菜品
+                      if (food.count) {//3.菜品选择的数量大于1时 将数组返回   每次改变  此方法都会重新调用  所以不会重复
+                          foods.push(food);
+                      }
+                  });
+              });
+              return foods;
           }
       },
       methods: {
@@ -135,7 +150,8 @@
         }
       },
       components: {
-        shopcart  //相当于 shopcart : shopcart
+        shopcart,  //相当于 shopcart : shopcart
+        cartcontrol
       }
   };
 </script>
