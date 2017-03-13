@@ -37,11 +37,23 @@
         </li>
       </ul>
     </div>
+    <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice"
+               :minPrice="seller.minPrice"></shopcart>
+    <!--:selectFoods="selectFoods"-->
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BSscroll from "better-scroll";
+  import shopcart from "components/shopcart/shopcart";
+  /*
+  * 引入模板组件  1. 引入文件  2.components参数设置标签名   3.模板页需要设置输出   4.使用自定义的标签名写到结构中
+  * 从父级传入属性 :属性名="a"  然后子组件 props 参数接收参数
+  *
+  * computed 会监听 主动触发 数据变化就发生变化  计算属性   定义的参数reutrn返回可以直接在结构中使用
+  * methods  被动触发  如添加事件
+  * created 加载即触发
+  * */
 
 
   const ERR_OK = 0;
@@ -56,8 +68,7 @@
         return {
             goods: [],//接收传过来的数据
             listHeight: [],
-            scrollY: 0,
-            selectedFood: {}
+            scrollY: 0
         }
       },
       created() {
@@ -118,10 +129,13 @@
           for (let i = 0; i < foodList.length; i++) {
             let item = foodList[i];
             height += item.clientHeight;
-            console.log(height)
+//            console.log(height)
             this.listHeight.push(height);
           }
         }
+      },
+      components: {
+        shopcart  //相当于 shopcart : shopcart
       }
   };
 </script>
