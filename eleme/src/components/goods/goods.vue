@@ -16,7 +16,7 @@
         <li v-for="item in goods" class="food-list" ref="foodList">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" class="food-item">
+            <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon">
               </div>
@@ -32,7 +32,7 @@
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -40,7 +40,7 @@
         </li>
       </ul>
     </div>
-    <shopcart ref="shopcart"　:selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
+    <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
                :minPrice="seller.minPrice"></shopcart>
     <!--:selectFoods="selectFoods"-->
   </div>
@@ -72,7 +72,8 @@
         return {
             goods: [],//接收传过来的数据
             listHeight: [],
-            scrollY: 0
+            scrollY: 0,
+            selectedFood: {}
         }
       },
       created() {
@@ -105,7 +106,7 @@
               let foods = [];
               this.goods.forEach((good) => {//1.遍历所有的商品
                   good.foods.forEach((food) => {//2.遍历 所有菜品
-                      if (food.count) {//3.菜品选择的数量大于1时 将数组返回   每次改变  此方法都会重新调用  所以不会重复
+                      if (food.count) {//3.菜品选择的数量大于1时（因在控制组件里添加了count属性） 将数组返回   每次改变  此方法都会重新调用  所以不会重复
                           foods.push(food);
                       }
                   });
@@ -121,6 +122,27 @@
             let el = foodList[index];
             this.foodsScroll.scrollToElement(el, 300);
           }
+        },
+        selectFood(food, event) {
+          if (!event._constructed) {
+            return;
+          }
+          this.selectedFood = food;
+//          console.log(9)
+//          this.$refs.food.show();
+        },
+        addFood(target) {
+            /*
+            * 1.在cartcontrol添加数据通信  click改变数据之后传入父级goods   再触发_drop方法
+            * 2.之后再调用子组件的drop方法  （$refs访问原生dom对象）
+            * */
+          this._drop(target);
+        },
+        _drop(target) {
+          // 体验优化,异步执行下落动画
+          this.$nextTick(() => {
+            this.$refs.shopcart.drop(target);
+          });
         },
         _initScroll() {//自定义的滚动条
           /*如果需要获取原生的dom 可以加ref="menuWrapper" 属性来访问*/
