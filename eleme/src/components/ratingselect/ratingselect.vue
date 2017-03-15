@@ -1,14 +1,14 @@
 <template>
   <div class="ratingselect">
     <div class="rating-type border-1px">
-      <span class="block positive" :class="{'active':selectType===2}">{{desc.all}}<span
-        class="count">{{55}}</span></span>
-      <span class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span
-        class="count">{{33}}</span></span>
-      <span class="block negative" :class="{'active':selectType===1}">{{desc.negative}}<span
-        class="count">{{22}}</span></span>
+      <span @click="select(2,$event)" class="block positive" :class="{'active':selectType===2}">{{desc.all}}<span
+        class="count">{{ratings.length}}</span></span>
+      <span @click="select(0,$event)" class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span
+        class="count">{{positives.length}}</span></span>
+      <span @click="select(1,$event)" class="block negative" :class="{'active':selectType===1}">{{desc.negative}}<span
+        class="count">{{negatives.length}}</span></span>
     </div>
-    <div class="switch">
+    <div @click="toggleContent" class="switch" :class="{'on':onlyContent}">
       <span class="icon-check_circle"></span>
       <span class="text">只看有内容的评价</span>
     </div>
@@ -48,6 +48,34 @@
               negative: '不满意'
             }
           }
+      }
+    },
+    computed: {
+      positives() {
+        return this.ratings.filter((rating) => {
+          return rating.rateType === POSITIVE;
+        });
+      },
+      negatives() {
+        return this.ratings.filter((rating) => {
+          return rating.rateType === NEGATIVE;
+        });
+      }
+    },
+    methods: {
+      select(type, event){
+        if (!event._constructed) {
+          return;
+        }
+        /*1.把事件派发到父级组件中  2.父级组件通过@select 来接收并设置方法   3.传入的第二个之后的都是实参  父级组件可以在事件中接收到
+        * */
+        this.$emit('select', type);
+      },
+      toggleContent(event) {
+        if (!event._constructed) {
+          return;
+        }
+        this.$emit('toggle');
       }
     }
   };

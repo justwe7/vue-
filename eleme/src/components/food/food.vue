@@ -34,7 +34,7 @@
         <split></split>
         <div class="rating">
           <h1 class="title">商品评价</h1>
-          <ratingselect :selectType="selectType" :onlyContent="onlyContent" :desc="desc"
+          <ratingselect @select="selectRating" @toggle="toggleContent" :selectType="selectType" :onlyContent="onlyContent" :desc="desc"
                         :ratings="food.ratings"></ratingselect>
           <!--传入到子组件数据-->
         </div>
@@ -61,6 +61,7 @@
       data() {
           return {
               showFlag: false,
+//            传入到子模板的默认参数
               selectType: ALL,
               onlyContent: true,
               desc: {
@@ -104,6 +105,13 @@
           addFood(target) {
 //              console.info(target)
             this.$emit('add', target);
+          },
+          selectRating(type,event) {
+              console.log(event)
+            this.selectType = type;
+          },
+          toggleContent() {
+            this.onlyContent = !this.onlyContent;
           }
       },
       components: {
