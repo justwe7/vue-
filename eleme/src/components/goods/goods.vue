@@ -1,55 +1,60 @@
 <template>
-  <div class="goods">
-    <div class="menu-wrapper" ref="menuWrapper">
-      <ul>
-        <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
-            @click="selectMenu(index,$event)">
-          <!--currentIndex===index 为true时 current添加-->
-          <span class="text border-1px">
-            <b v-show="item.type>0" class="icon" :class="classMap[item.type]"></b>{{item.name}}
-          </span>
-        </li>
-      </ul>
+  <div>
+    <div class="goods">
+      <div class="menu-wrapper" ref="menuWrapper">
+        <ul>
+          <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
+              @click="selectMenu(index,$event)">
+            <!--currentIndex===index 为true时 current添加-->
+            <span class="text border-1px">
+              <b v-show="item.type>0" class="icon" :class="classMap[item.type]"></b>{{item.name}}
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="foods-wrapper" ref="foodsWrapper">
+        <ul>
+          <li v-for="item in goods" class="food-list" ref="foodList">
+            <h1 class="title">{{item.name}}</h1>
+            <ul>
+              <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item">
+                <!--添加详情页对象-->
+                <div class="icon">
+                  <img width="57" height="57" :src="food.icon">
+                </div>
+                <div class="content">
+                  <h2 class="name">{{food.name}}</h2>
+                  <p class="desc">{{food.description}}</p>
+                  <div class="extra">
+                    <span class="count">月售{{food.sellCount}}份</span>
+                    <span>好评率{{food.rating}}%</span>
+                  </div>
+                  <div class="price">
+                    <span class="now">￥{{food.price}}</span>
+                    <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                  </div>
+                  <div class="cartcontrol-wrapper">
+                    <cartcontrol @add="addFood" :food="food"></cartcontrol>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
+                 :minPrice="seller.minPrice"></shopcart>
+      <!--:selectFoods="selectFoods"-->
     </div>
-    <div class="foods-wrapper" ref="foodsWrapper">
-      <ul>
-        <li v-for="item in goods" class="food-list" ref="foodList">
-          <h1 class="title">{{item.name}}</h1>
-          <ul>
-            <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item">
-              <div class="icon">
-                <img width="57" height="57" :src="food.icon">
-              </div>
-              <div class="content">
-                <h2 class="name">{{food.name}}</h2>
-                <p class="desc">{{food.description}}</p>
-                <div class="extra">
-                  <span class="count">月售{{food.sellCount}}份</span>
-                  <span>好评率{{food.rating}}%</span>
-                </div>
-                <div class="price">
-                  <span class="now">￥{{food.price}}</span>
-                  <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
-                </div>
-                <div class="cartcontrol-wrapper">
-                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
-               :minPrice="seller.minPrice"></shopcart>
-    <!--:selectFoods="selectFoods"-->
+    <food :food="selectedFood" ref="food"></food>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BSscroll from "better-scroll";
   import shopcart from "components/shopcart/shopcart";
-  import cartcontrol from "components/cartcontrol/cartcontrol"
+  import cartcontrol from "components/cartcontrol/cartcontrol";//购物车控制  增减
+  import food from "components/food/food"; //商品详情
   /*
   * 引入模板组件  1. 引入文件  2.components参数设置标签名   3.模板页需要设置输出   4.使用自定义的标签名写到结构中
   * 从父级传入属性 :属性名="a"  然后子组件 props 参数接收参数
@@ -128,8 +133,7 @@
             return;
           }
           this.selectedFood = food;
-//          console.log(9)
-//          this.$refs.food.show();
+          this.$refs.food.show(); //访问原生dom  food.vue下的show方法
         },
         addFood(target) {
             /*
@@ -173,7 +177,8 @@
       },
       components: {
         shopcart,  //相当于 shopcart : shopcart
-        cartcontrol
+        cartcontrol,
+        food
       }
   };
 </script>
@@ -260,6 +265,7 @@
             color: rgb(7, 17, 27)
           .desc, .extra
             line-height: 10px
+            white-space nowrap
             font-size: 10px
             color: rgb(147, 153, 159)
           .desc
