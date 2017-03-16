@@ -37,6 +37,21 @@
           <ratingselect @select="selectRating" @toggle="toggleContent" :selectType="selectType" :onlyContent="onlyContent" :desc="desc"
                         :ratings="food.ratings"></ratingselect>
           <!--传入到子组件数据-->
+          <div class="rating-wrapper">
+            <ul v-show="food.ratings && food.ratings.length">
+              <li v-show="needShow(rating.rateType,rating.text)" v-for="rating in food.ratings" class="rating-item border-1px">
+                <div class="user">
+                  <span class="name">{{rating.username}}</span>
+                  <img class="avatar" width="12" height="12" :src="rating.avatar">
+                </div>
+                <div class="time">{{rating.rateTime | formatDate}}</div>
+                <p class="text">
+                  <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>{{rating.text}}
+                </p>
+              </li>
+            </ul>
+            <div class="no-rating" v-show="!food.ratings || !food.ratings.length">暂无评价</div>
+          </div>
         </div>
       </div>
     </div>
@@ -45,6 +60,7 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
+  import {formatDate} from 'common/js/date'; //引入公用的js组件  /* 1.带花括号的输出是 date下的function 可以传入多个function {A,B} 2.不带花括号的输出是export default*/
   import Vue from 'vue';
   import cartcontrol from 'components/cartcontrol/cartcontrol';
   import split from 'components/split/split';
@@ -106,13 +122,35 @@
 //              console.info(target)
             this.$emit('add', target);
           },
-          selectRating(type,event) {
-              console.log(event)
+          selectRating(type,event) {//改变显示的中差评类型
             this.selectType = type;
+            this.$nextTick(() => {
+              this.scroll.refresh();
+            });
           },
-          toggleContent() {
+          toggleContent() {//改变是否展示内容
             this.onlyContent = !this.onlyContent;
+            this.$nextTick(() => {
+              this.scroll.refresh();
+            });
+          },
+          needShow(type, text) {
+            if (this.onlyContent && !text) {
+              return false;
+            }
+            if (this.selectType === ALL) {
+              return true;
+            } else {
+                console.log(this.selectType)
+              return type === this.selectType;
+            }
           }
+      },
+      filters: {
+        formatDate(time) {
+          let date = new Date(time);
+          return formatDate(date, 'yyyy-MM-dd hh:mm');
+        }
       },
       components: {
         cartcontrol,
