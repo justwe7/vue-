@@ -13,27 +13,35 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </nav>
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+      <!--生命周期不会重新加载数据  -->
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {urlParse} from 'common/js/util';
   import header from './components/header/header.vue';
 
   const ERR_OK = 0;//定义AJAX请求的状态码为
 
   export default {
     data(){
-      return{
-        seller: {}
-      }
+      return {
+        seller: {
+          id: (() => {
+            let queryParam = urlParse();
+            return queryParam.id;
+          })()
+        }
+      };
     },
     created(){//学名叫钩子
-      this.$http.get('/api/seller').then((response) => {
+      this.$http.get('/api/seller?id=' + this.seller.id).then((response) => {//真实项目需要添加id信息参数  util封装获取url信息
         response = response.body;
         if (response.errno === ERR_OK){
-          this.seller = response.data;
-//          console.log(this.seller)
+          this.seller = Object.assign({}, this.seller, response.data);
         }
       });
     },
@@ -44,7 +52,7 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  @import "./common/stylus/mixin.styl"
+  @import "./common/stylus/mixin.styl";
 
   .app
     .tab
@@ -52,7 +60,6 @@
       width: 100%
       height: 40px
       line-height: 40px
-      //border-bottom: 1px solid rgba(7,17,27,0.1)
       border-1px(rgba(7,17,27,0.1))
       .tab-item
         flex: 1

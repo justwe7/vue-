@@ -141,7 +141,6 @@
             if (this.selectType === ALL) {
               return true;
             } else {
-                console.log(this.selectType)
               return type === this.selectType;
             }
           }

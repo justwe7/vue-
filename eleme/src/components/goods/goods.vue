@@ -265,9 +265,10 @@
             color: rgb(7, 17, 27)
           .desc, .extra
             line-height: 10px
-            white-space nowrap
             font-size: 10px
             color: rgb(147, 153, 159)
+            span
+              white-space nowrap
           .desc
             line-height: 12px
             margin-bottom: 8px
